@@ -1,6 +1,33 @@
 {
-  "dependencies": {
-    "crypto": "^1.0.1",
-    "node-fetch": "^2.1.2"
-  }
+    "name": "gatsby-source-newsapi",
+    "version": "0.1.0",
+    "description": "Gatsby source plugin for building websites using NewsAPI.org",
+    "scripts": {
+      "build": "babel src --out-dir .",
+      "watch": "babel -w src --out-dir .",
+      "lint": "eslint src/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/levu48/gatsby-source-newsapi.git"
+    },
+    "keywords": [
+      "gatsby",
+      "gatsby-plugin",
+      "gatsby-source-plugin"
+    ],
+    "author": "Thach Le <levu48@gmail.com>",
+    "license": "MIT",
+    "devDependencies": {
+      "babel-cli": "^6.24.1",
+      "eslint": "^3.19.0",
+      "eslint-config-airbnb": "^15.0.2",
+      "eslint-plugin-import": "^2.7.0",
+      "eslint-plugin-jsx-a11y": "^5.1.1",
+      "eslint-plugin-react": "^7.1.0"
+    },
+    "dependencies": {
+        "crypto": "^1.0.1",
+        "node-fetch": "^2.1.2"
+    }
 }
