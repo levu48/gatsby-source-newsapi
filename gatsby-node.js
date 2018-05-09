@@ -3,15 +3,16 @@ const crypto = require('crypto');
 
 const createContentDigest = obj => crypto.createHash('md5').update(JSON.stringify(obj)).digest('hex');
 
-function generateUUID() { // Public Domain/MIT
+function generateUUID() {
+    // Public Domain/MIT
     var d = new Date().getTime();
-    if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
         d += performance.now(); //use high-precision timer if available
     }
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = (d + Math.random() * 16) % 16 | 0;
         d = Math.floor(d / 16);
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
     });
 }
 
@@ -66,7 +67,7 @@ const sourceNodes = async ({ boundActionCreators }) => {
         return;
     }
 
-    console.log('>>> DATA3', data3);
+    console.log('>>> DATA3b', data3);
 
     const childrenIds = data ? createChildren(data.articles, url, createNode) : [];
     const childrenIds2 = data2 ? createChildren(data2.articles, url2, createNode) : [];

@@ -3,13 +3,25 @@ const crypto = require('crypto');
 
 const createContentDigest = obj => crypto.createHash('md5').update(JSON.stringify(obj)).digest('hex');
 
+function generateUUID() { // Public Domain/MIT
+    var d = new Date().getTime();
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+        d += performance.now(); //use high-precision timer if available
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
 const createChildren = (entries, parentId, createNode) => {
     const childIds = [];
     entries.forEach(entry => {
       childIds.push(entry.url);
 
       const node = Object.assign({}, entry, {
-        id: entry.url,
+        id: generateUUID(),
         title: entry.title,
         link: entry.url,
         description: entry.description,
@@ -57,14 +69,14 @@ const sourceNodes = async ({boundActionCreators}) => {
         return;
     }
 
-    console.log('>>> DATA3', data3);
+    console.log('>>> DATA3b', data3);
 
     const childrenIds = data ? createChildren(data.articles, url, createNode) : [];
     const childrenIds2 = data2 ? createChildren(data2.articles, url2, createNode) : [];
     const childrenIds3 = data3 ? createChildren(data3.articles, url3, createNode) : [];
 
     let feedStory = {
-        id: url,
+        id: generateUUID(),
         title: 'Headline News, US',
         description: 'Top Headline News Today',
         link: url,
