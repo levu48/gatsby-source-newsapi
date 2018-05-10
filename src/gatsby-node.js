@@ -21,7 +21,7 @@ const createChildren = (entries, parentId, createNode) => {
       childIds.push(entry.url);
 
       const node = Object.assign({}, entry, {
-        id: generateUUID(),
+        id: entry.url,
         title: entry.title,
         link: entry.url,
         description: entry.description,
@@ -76,7 +76,7 @@ const sourceNodes = async ({boundActionCreators}) => {
     const childrenIds3 = data3 ? createChildren(data3.articles, url3, createNode) : [];
 
     let feedStory = {
-        id: generateUUID(),
+        id: url,
         title: 'Headline News, US',
         description: 'Top Headline News Today',
         link: url,
