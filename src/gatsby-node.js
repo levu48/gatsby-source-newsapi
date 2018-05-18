@@ -15,7 +15,7 @@ function generateUUID() { // Public Domain/MIT
     });
 }
 
-const createChildren = (entries, parentId, createNode) => {
+const createChildren = (entries = [], parentId, createNode) => {
     const childIds = [];
     entries.forEach(entry => {
       childIds.push(entry.url);
@@ -39,49 +39,23 @@ const createChildren = (entries, parentId, createNode) => {
     return childIds;
   };
 
-const sourceNodes = async ({boundActionCreators}) => {
+const sourceNodes = async ({boundActionCreators}, {sources = []}) => {
     const {createNode} = boundActionCreators;
-    
-    //const url = 'https://api.newsapi.aylien.com/api/v1/stories?text=viet&published_at.start=NOW-29DAYS%2FDAY&published_at.end=NOW&categories.id%5B%5D=IAB20&categories.taxonomy=iab-qag&language=en&sort_by=recency'
-    
-    const url = 'https://newsapi.org/v2/top-headlines'
-            + '?apiKey=ca8f478ba3af4300ab29be359e0efc2f'
-            + '&country=us'
-            + '&pageSize=30';
-    
-    const url2 = 'https://newsapi.org/v2/everything?q=south%20china%20sea&sortBy=publishedAt&apiKey=ca8f478ba3af4300ab29be359e0efc2f&pageSize=10'
+    const sourcesData = await Promise.all(sources.map(async obj => await fetch(obj.url).then(resp => resp.json())));
+    const flag = sourcesData.reduce((data, prev) => !!data && !!prev, true);
 
-    const url3 = 'https://newsapi.org/v2/everything?q=vietnam&sortBy=publishedAt&apiKey=ca8f478ba3af4300ab29be359e0efc2f&language=en&pageSize=30'
+    if (!Array.isArray(sources)) return null;
 
-    // const url = 'https://newsapi.org/v2/everything'
-    //         + '?q=bitcoin'
-    //         + '&apiKey=ca8f478ba3af4300ab29be359e0efc2f';
-    
-    // const url = 'https://newsapi.org/v2/top-headlines'
-    // + '?apiKey=ca8f478ba3af4300ab29be359e0efc2f'
-    // + '&country=cn';
-           
-    const data = await fetch(url).then(response => response.json());
-    const data2 = await fetch(url2).then(response => response.json());
-    const data3 = await fetch(url3).then(response => response.json());
-
-    if (!data && !data2 && !data3) {
-        return;
-    }
-
-    console.log('>>> DATA3b', data3);
-
-    const childrenIds = data ? createChildren(data.articles, url, createNode) : [];
-    const childrenIds2 = data2 ? createChildren(data2.articles, url2, createNode) : [];
-    const childrenIds3 = data3 ? createChildren(data3.articles, url3, createNode) : [];
+    const childrenIds = sourcesData.map((data, i) => data ? createChildren(data.articles, sources[i].url, createNode) : []);
+    const children = childrenIds.reduce((child, gen) => gen.concat(child), []);
 
     let feedStory = {
-        id: url,
-        title: 'Headline News, US',
+        id: generateUUID(),
+        title: 'Headline News',
         description: 'Top Headline News Today',
-        link: url,
+        link: '/',
         parent: null,
-        children: childrenIds.concat(childrenIds2).concat(childrenIds3)
+        children
     }
 
     feedStory.internal = {
